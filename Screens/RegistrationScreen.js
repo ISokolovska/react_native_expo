@@ -1,36 +1,37 @@
 import React from "react";
-import { TextInput, View, StyleSheet } from "react-native";
-// import { styles } from "../helpers/styles/styles";
-// import styles from "../helpers/styles/styles";
+import { Text, TextInput, View, StyleSheet } from "react-native";
 
 const RegistrationScreen = () => {
   return (
-    <View
-      style={styles.container}
-      // style={{
-      //   flex: 1,
-      //   justifyContent: "center",
-      //   alignItems: "center",
-      // }}
-    >
-      <TextInput
-        style={styles.input}
-        placeholder="Логин"
-        // onChangeText={(newText) => setText(newText)}
-        // defaultValue={text}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Адрес электронной почты"
-        // onChangeText={(newText) => setText(newText)}
-        // defaultValue={text}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Пароль"
-        // onChangeText={(newText) => setText(newText)}
-        // defaultValue={text}
-      />
+    <View>
+      <Text style={styles.title}>Registration</Text>
+      <View
+        style={styles.container}
+        // style={{
+        //   flex: 1,
+        //   justifyContent: "center",
+        //   alignItems: "center",
+        // }}
+      >
+        <TextInput
+          style={styles.input}
+          placeholder="Login"
+          // onChangeText={(newText) => setText(newText)}
+          // defaultValue={text}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="E-mail"
+          // onChangeText={(newText) => setText(newText)}
+          // defaultValue={text}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          // onChangeText={(newText) => setText(newText)}
+          // defaultValue={text}
+        />
+      </View>
     </View>
   );
 };
@@ -43,12 +44,15 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 92,
-    background: "#FFFFFF",
-    // borderRadius: 25 25 0 0
+    backgroundColor: "#FFFFFF",
     borderTopStartRadius: 25,
-    borderBottomEndRadius: 25,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    borderTopEndRadius: 25,
+  },
+  title: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 30,
+    lineHeight: 1.2,
+    color: "#212121",
   },
   input: {
     minWidth: "100%",
@@ -59,6 +63,13 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: "#E8E8E8",
     borderRadius: 8,
+
+    // fontFamily: "Roboto",
+    // fontStyle: normal,
+    // fontWeight: 400,
+    // fontSize: 16,
+    // lineHeight: 1.2,
+    // color: "#BDBDBD",
   },
 });
 
