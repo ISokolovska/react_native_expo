@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   TextInput,
@@ -6,65 +6,96 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Dimensions,
 } from "react-native";
 
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 const RegistrationScreen = () => {
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [dimensions, setDimensions] = useState({
+    height: windowHeight,
+    width: windowWidth - 16 * 2,
+  });
+
   return (
     <View style={styles.container}>
       <ImageBackground
         source={require("./../assets/images/mountain.png")}
         style={styles.image}
       >
-        <View style={styles.form}>
-          <Text style={styles.title}>Registration</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Login"
-            // onChangeText={(newText) => setText(newText)}
-            // defaultValue={text}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            // onChangeText={(newText) => setText(newText)}
-            // defaultValue={text}
-          />
-          <View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.containerReg}
+        >
+          <View
+            style={{
+              ...styles.form,
+              paddingBottom:
+                !isShowKeyboard && dimensions.width < dimensions.height
+                  ? 100
+                  : 32,
+            }}
+          >
+            <Text style={styles.title}>Registration</Text>
             <TextInput
               style={styles.input}
-              placeholder="Password"
-              secureTextEntry={true}
+              placeholder="Login"
+              onFocus={() => {
+                setIsShowKeyboard(true);
+              }}
               // onChangeText={(newText) => setText(newText)}
               // defaultValue={text}
             />
+            <TextInput
+              style={styles.input}
+              placeholder="E-mail"
+              onFocus={() => {
+                setIsShowKeyboard(true);
+              }}
+              // onChangeText={(newText) => setText(newText)}
+              // defaultValue={text}
+            />
+            <View>
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                secureTextEntry={true}
+                onFocus={() => {
+                  setIsShowKeyboard(true);
+                }}
+                // onChangeText={(newText) => setText(newText)}
+                // defaultValue={text}
+              />
+              <TouchableOpacity
+                style={{ position: "absolute", right: 16, top: 16 }}
+                // onPress={onShow}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.buttonShow}>Show</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
-              style={{ position: "absolute", right: 16, top: 16 }}
-              // onPress={onShow}
+              style={styles.button}
+              // onPress={handleSubmit}
               activeOpacity={0.7}
             >
-              <Text style={styles.buttonShow}>Show</Text>
+              <Text style={styles.buttonText}>Registration</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.changePageBtn}
+              // onPress={() => navigation.navigate("Login")}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.changePageText}>
+                Already have an account? Log in
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.line} />
           </View>
-
-          <TouchableOpacity
-            style={styles.button}
-            // onPress={handleSubmit}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.changePageBtn}
-            // onPress={() => navigation.navigate("Login")}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.changePageText}>
-              Already have an account? Log in
-            </Text>
-          </TouchableOpacity>
-        </View>
+        </KeyboardAvoidingView>
       </ImageBackground>
     </View>
   );
@@ -76,14 +107,14 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-end",
   },
   form: {
     marginTop: "auto",
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 92,
-    paddingBottom: 78,
+    paddingBottom: 8,
     backgroundColor: "#FFFFFF",
     borderTopStartRadius: 25,
     borderTopEndRadius: 25,
@@ -116,6 +147,7 @@ const styles = StyleSheet.create({
     // lineHeight: 1.2,
     // color: "#1B4371",
   },
+  containerReg: {},
   button: {
     alignItems: "center",
     width: "100%",
@@ -143,6 +175,17 @@ const styles = StyleSheet.create({
     // fontFamily: "Roboto-Regular",
     // fontSize: 16,
     // lineHeight: 1.2,
+  },
+  line: {
+    width: 134,
+    marginTop: 66,
+    borderBottomColor: "#212121",
+    borderBottomWidth: 5,
+    // justifyContent: "center",
+    // borderBottomStartRadius: 10,
+    // borderBottomEndRadius: 10,
+    // borderBottomLeftRadius: 10,
+    // borderBottomRightRadius: 10,
   },
 });
 
