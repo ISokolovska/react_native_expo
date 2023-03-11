@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TextInput,
@@ -6,60 +6,119 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  Dimensions,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from "react-native";
 
-const LoginScreen = () => {
-  return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("./../assets/images/mountain.png")}
-        style={styles.image}
-      >
-        <View style={styles.form}>
-          <Text style={styles.title}>Log in</Text>
+const initialState = {
+  email: "",
+  password: "",
+};
 
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            // onChangeText={(newText) => setText(newText)}
-            // defaultValue={text}
-          />
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              secureTextEntry={true}
-              // onChangeText={(newText) => setText(newText)}
-              // defaultValue={text}
-            />
-            <TouchableOpacity
-              style={{ position: "absolute", right: 16, top: 16 }}
-              // onPress={onShow}
-              activeOpacity={0.7}
+const LoginScreen = () => {
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
+  const [state, setState] = useState(initialState);
+
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width;
+      setDimensions(width);
+    };
+    const subscription = Dimensions.addEventListener("change", onChange);
+    return () => subscription?.remove();
+  }, []);
+
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    console.log(state);
+    setState(initialState);
+  };
+
+  // const handleSubmit = async () => {
+  //   dispatch(logInUser(state));
+  //   keyboardHide();
+  // };
+
+  return (
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("./../assets/images/mountain.png")}
+          style={styles.image}
+        >
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.containerReg}
+          >
+            <View
+              style={{
+                ...styles.form,
+                marginBottom: isShowKeyboard ? 20 : "auto",
+                width: dimensions,
+              }}
+              // style={styles.form}
             >
-              <Text style={styles.buttonShow}>Show</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            style={styles.button}
-            // onPress={handleSubmit}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.buttonText}>Log in</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.changePageBtn}
-            // onPress={() => navigation.navigate("Login")}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.changePageText}>
-              Haven't an account? Registration
-            </Text>
-          </TouchableOpacity>
-          <View style={styles.line} />
-        </View>
-      </ImageBackground>
-    </View>
+              <Text style={styles.title}>Log in</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="E-mail"
+                onFocus={() => {
+                  setIsShowKeyboard(true);
+                }}
+                value={state.login}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, email: value }))
+                }
+                // defaultValue={text}
+              />
+              <View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  secureTextEntry={true}
+                  onFocus={() => {
+                    setIsShowKeyboard(true);
+                  }}
+                  value={state.login}
+                  onChangeText={(value) =>
+                    setState((prevState) => ({ ...prevState, password: value }))
+                  }
+                  // defaultValue={text}
+                />
+                <TouchableOpacity
+                  style={{ position: "absolute", right: 16, top: 16 }}
+                  // onPress={onShow}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.buttonShow}>Show</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={styles.button}
+                // onPress={handleSubmit}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.buttonText}>Log in</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.changePageBtn}
+                // onPress={() => navigation.navigate("Login")}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.changePageText}>
+                  Haven't an account? Registration
+                </Text>
+              </TouchableOpacity>
+              <View style={styles.line} />
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -109,6 +168,7 @@ const styles = StyleSheet.create({
     // lineHeight: 1.2,
     // color: "#1B4371",
   },
+  containerReg: {},
   button: {
     alignItems: "center",
     width: "100%",
