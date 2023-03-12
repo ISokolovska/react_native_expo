@@ -1,42 +1,74 @@
-import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { Feather } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 
-const PostsScreen = () => {
+const NestedScreen = createStackNavigator();
+
+const PostsScreen = ({ navigation }) => {
+  const handleLogout = () => {};
   return (
-    // <NestedScreen.Navigator>
-    //   <NestedScreen.Screen
-    //     name="DefaultScreen"
-    //     component={DefaultScreenPosts}
-    //   />
-    //   <NestedScreen.Screen name="Comments" component={CommentsScreen} />
-    //   <NestedScreen.Screen name="Map" component={MapScreen} />
-    // </NestedScreen.Navigator>
-    <View>
-      <View style={styles.header}>
-        <Text>Posts</Text>
-        <TouchableOpacity activeOpacity={0.8} style={styles.button}>
-          <Text>Log out</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <NestedScreen.Navigator
+      initialRouteName="Default"
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontFamily: "Roboto-Medium",
+          color: "#212121",
+        },
+
+        headerStyle: {
+          backgroundColor: "#FFFFFF",
+          borderBottomWidth: 1,
+          borderBottomColor: "#E8E8E8",
+        },
+      }}
+    >
+      <NestedScreen.Screen
+        name="Default"
+        options={{
+          title: "Posts",
+          headerLeft: () => {},
+          headerRight: () => (
+            <TouchableOpacity onPress={handleLogout}>
+              <Feather name="log-out" size={24} color="#BDBDBD" />
+            </TouchableOpacity>
+          ),
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+        }}
+      />
+      <NestedScreen.Screen
+        name="Comments"
+        options={{
+          title: "Comments",
+          tabBarStyle: { display: "none" },
+          headerLeft: ({ focused, size, color }) => (
+            <TouchableOpacity onPress={() => {}}>
+              <Feather name="arrow-left" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+          headerLeftContainerStyle: {
+            paddingLeft: 16,
+          },
+        }}
+      />
+      <NestedScreen.Screen
+        name="Map"
+        options={{
+          title: "Map",
+          headerLeft: ({ focused, size, color }) => (
+            <TouchableOpacity onPress={() => {}}>
+              <Feather name="arrow-left" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+          headerLeftContainerStyle: {
+            paddingLeft: 16,
+          },
+        }}
+      />
+    </NestedScreen.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  header: {
-    flex: 1,
-    flexDirection: "row",
-    paddingTop: 55,
-    paddingBottom: 11,
-  },
-  //   line: {
-  //     width: "100%",
-  //     paddingTop: 55,
-  //     paddingBottom: 11,
-  //     borderBottomColor: "#212121",
-  //     borderBottomWidth: 1,
-  //   },
-  button: {},
-});
 
 export default PostsScreen;

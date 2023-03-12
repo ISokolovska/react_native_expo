@@ -1,47 +1,65 @@
-// import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
-import { useFonts } from "expo-font";
-// import * as SplashScreen from "expo-splash-screen";
-// import RegistrationScreen from "./Screens/RegistrationScreen";
+import * as React from "react";
+// import PostsScreen from "./Screens/PostsScreen";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import RegistrationScreen from "./Screens/RegistrationScreen";
 import LoginScreen from "./Screens/LoginScreen";
-// import PostsScreen from "./Screens/mainScreen/PostsScreen";
-// import { useCallback } from "react";
+import useCachedResources from "./helpers/fonts";
 
-// SplashScreen.preventAutoHideAsync();
+const AuthStack = createStackNavigator();
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
-  });
-  // upload fonts before any
-  // const onLayoutRootView = useCallback(async () => {
-  //   if (fontsLoaded) {
-  //     await SplashScreen.hideAsync();
-  //   }
-  // }, [fontsLoaded]);
-
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
-
+  const isLoadingComplete = useCachedResources();
+  if (!isLoadingComplete) {
+    return null;
+  }
   return (
-    <View style={styles.container}>
-      {/* <RegistrationScreen /> */}
-      <LoginScreen />
-      {/* <PostsScreen /> */}
-      {/* <CreatePostsScreen /> */}
-      {/* <CommentsScreen /> */}
-      {/* <ProfileScreen /> */}
-      {/* <MapScreen /> */}
-      {/* <Home /> */}
-    </View>
+    <NavigationContainer>
+      <AuthStack.Navigator>
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="Register"
+          component={RegistrationScreen}
+        />
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="Login"
+          component={LoginScreen}
+        />
+      </AuthStack.Navigator>
+    </NavigationContainer>
   );
+  // <View style={styles.container}>
+  {
+    /* <RegistrationScreen /> */
+  }
+  {
+    /* <LoginScreen /> */
+  }
+  {
+    /* <PostsScreen /> */
+  }
+  {
+    /* <CreatePostsScreen /> */
+  }
+  {
+    /* <CommentsScreen /> */
+  }
+  {
+    /* <ProfileScreen /> */
+  }
+  {
+    /* <MapScreen /> */
+  }
+  {
+    /* <Home /> */
+  }
+  // </View>
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#fff",
+//   },
+// });

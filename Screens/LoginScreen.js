@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 
 const initialState = {
@@ -16,15 +17,19 @@ const initialState = {
   password: "",
 };
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
+  const [dimensions, setDimensions] = useState({
+    width: Dimensions.get("window").width - 16 * 2,
+    height: Dimensions.get("window").height,
+  });
   const [state, setState] = useState(initialState);
 
   useEffect(() => {
     const onChange = () => {
-      const width = Dimensions.get("window").width;
-      setDimensions(width);
+      const width = Dimensions.get("window").width - 16 * 2;
+      const height = Dimensions.get("window").height;
+      setDimensions({ width, height });
     };
     const subscription = Dimensions.addEventListener("change", onChange);
     return () => subscription?.remove();
@@ -57,7 +62,7 @@ const LoginScreen = () => {
               style={{
                 ...styles.form,
                 marginBottom: isShowKeyboard ? 20 : "auto",
-                width: dimensions,
+                // width: dimensions,
               }}
               // style={styles.form}
             >
@@ -106,7 +111,7 @@ const LoginScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.changePageBtn}
-                // onPress={() => navigation.navigate("Login")}
+                onPress={() => navigation.navigate("Register")}
                 activeOpacity={0.7}
               >
                 <Text style={styles.changePageText}>
@@ -132,23 +137,31 @@ const styles = StyleSheet.create({
   },
   form: {
     marginTop: "auto",
-    paddingLeft: 16,
-    paddingRight: 16,
+    paddingHorizontal: 16,
+    // marginHorizontal: 16,
+    // paddingLeft: 16,
+    // paddingRight: 16,
     paddingTop: 32,
-    paddingBottom: 8,
+    // paddingBottom: 8,
     backgroundColor: "#FFFFFF",
     borderTopStartRadius: 25,
     borderTopEndRadius: 25,
   },
   title: {
+    // marginTop: 32,
     marginBottom: 33,
-    // fontFamily: "Roboto-Medium",
-    // fontSize: 30,
-    // lineHeight: 1.2,
-    // color: "#212121",
+    textAlign: "center",
+    fontFamily: "Roboto-Medium",
+    fontWeight: "500",
+    fontSize: 30,
+    lineHeight: 35,
+    letterSpacing: 0.01,
+    color: "#212121",
   },
   input: {
     marginBottom: 16,
+    marginLeft: 16,
+    marginRight: 16,
     minWidth: "100%",
     height: 50,
     padding: 16,
@@ -157,16 +170,19 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: "#E8E8E8",
     borderRadius: 8,
-    // fontFamily: "Roboto-Regular",
-    // fontSize: 16,
-    // lineHeight: 1.2,
-    // color: "#BDBDBD",
+    fontFamily: "Roboto-Regular",
+    fontWeight: "400",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#BDBDBD",
   },
   buttonShow: {
-    // fontFamily: "Roboto-Regular",
-    // fontSize: 16,
-    // lineHeight: 1.2,
-    // color: "#1B4371",
+    fontFamily: "Roboto-Regular",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#1B4371",
   },
   containerReg: {},
   button: {
@@ -182,31 +198,31 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFFFFF",
-    // fontFamily: "Roboto-Regular",
-    // fontWeight: "400",
-    // fontSize: 16,
-    // lineHeight: 1.2,
+    fontFamily: "Roboto-Regular",
+    fontWeight: "400",
+    fontSize: 16,
+    lineHeight: 19,
   },
   changePageBtn: {
     marginLeft: "auto",
     marginRight: "auto",
   },
   changePageText: {
-    // color: "#1B4371",
-    // fontFamily: "Roboto-Regular",
-    // fontSize: 16,
-    // lineHeight: 1.2,
+    color: "#1B4371",
+    fontFamily: "Roboto-Regular",
+    fontWeight: "400",
+    fontSize: 16,
+    lineHeight: 19,
   },
   line: {
     width: 134,
     marginTop: 66,
+    marginBottom: 8,
     borderBottomColor: "#212121",
     borderBottomWidth: 5,
-    // justifyContent: "center",
-    // borderBottomStartRadius: 10,
-    // borderBottomEndRadius: 10,
-    // borderBottomLeftRadius: 10,
-    // borderBottomRightRadius: 10,
+    marginLeft: "auto",
+    marginRight: "auto",
+    borderRadius: 100,
   },
 });
 
