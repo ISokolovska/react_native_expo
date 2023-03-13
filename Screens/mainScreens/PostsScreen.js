@@ -1,14 +1,25 @@
 import { createStackNavigator } from "@react-navigation/stack";
+import Home from "./../nestedScreesn/Home";
+import CommentsScreen from "./../nestedScreens/CommentsScreen";
+import MapScreen from "./../nestedScreens/MapScreen";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
+import { useDispatch } from "react-redux";
+import { logOutUser } from "../redux/auth/authOperation";
+import { updateRoute } from "../redux/auth/authSlice";
 
 const NestedScreen = createStackNavigator();
 
 const PostsScreen = ({ navigation }) => {
-  const handleLogout = () => {};
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logOutUser());
+    // navigation.navigate('Login')
+  };
   return (
     <NestedScreen.Navigator
-      initialRouteName="Default"
+      initialRouteName="Home"
       screenOptions={{
         headerTitleAlign: "center",
         headerTitleStyle: {
@@ -24,7 +35,8 @@ const PostsScreen = ({ navigation }) => {
       }}
     >
       <NestedScreen.Screen
-        name="Default"
+        name="Home"
+        component={Home}
         options={{
           title: "Posts",
           headerLeft: () => {},
@@ -40,11 +52,17 @@ const PostsScreen = ({ navigation }) => {
       />
       <NestedScreen.Screen
         name="Comments"
+        component={CommentsScreen}
         options={{
           title: "Comments",
           tabBarStyle: { display: "none" },
           headerLeft: ({ focused, size, color }) => (
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Home");
+                dispatch(updateRoute(false));
+              }}
+            >
               <Feather name="arrow-left" size={24} color="black" />
             </TouchableOpacity>
           ),
@@ -55,10 +73,16 @@ const PostsScreen = ({ navigation }) => {
       />
       <NestedScreen.Screen
         name="Map"
+        component={MapScreen}
         options={{
           title: "Map",
           headerLeft: ({ focused, size, color }) => (
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Home");
+                dispatch(updateRoute(false));
+              }}
+            >
               <Feather name="arrow-left" size={24} color="black" />
             </TouchableOpacity>
           ),
