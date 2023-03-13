@@ -62,7 +62,7 @@ const RegistrationScreen = ({ navigation }) => {
             <View
               style={{
                 ...styles.form,
-                marginBottom: isShowKeyboard ? 20 : "auto",
+                // marginBottom: isShowKeyboard ? 20 : "auto",
                 // width: dimensions,
               }}
               // style={styles.form}

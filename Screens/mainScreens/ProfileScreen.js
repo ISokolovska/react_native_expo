@@ -13,6 +13,15 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Feather } from "@expo/vector-icons";
 // import { signOutUser } from '../redux/auth/authOperations';
+import {
+  collection,
+  getCountFromServer,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../firebase/config";
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -23,7 +32,12 @@ export default function ProfileScreen({ navigation }) {
     getUserPosts();
   }, []);
 
-  const getUserPosts = async () => {};
+  const getUserPosts = async () => {
+    const q = query(collection(db, "posts"), where("userId", "==", userId));
+    onSnapshot(q, (data) =>
+      setUserPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+    );
+  };
 
   // const signOut = () => {
   //   dispatch(signOutUser());

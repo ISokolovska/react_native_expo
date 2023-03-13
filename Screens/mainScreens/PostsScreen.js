@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "./../nestedScreesn/Home";
-import CommentsScreen from "./../nestedScreens/CommentsScreen";
-import MapScreen from "./../nestedScreens/MapScreen";
+import DefaultScreenPosts from "./nestedScreens/DefaultScreenPosts";
+import CommentsScreen from "./nestedScreens/CommentsScreen";
+import MapScreen from "./nestedScreens/MapScreen";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
@@ -19,7 +19,7 @@ const PostsScreen = ({ navigation }) => {
   };
   return (
     <NestedScreen.Navigator
-      initialRouteName="Home"
+      initialRouteName="Default"
       screenOptions={{
         headerTitleAlign: "center",
         headerTitleStyle: {
@@ -35,8 +35,8 @@ const PostsScreen = ({ navigation }) => {
       }}
     >
       <NestedScreen.Screen
-        name="Home"
-        component={Home}
+        name="Default"
+        component={DefaultScreenPosts}
         options={{
           title: "Posts",
           headerLeft: () => {},
@@ -59,7 +59,7 @@ const PostsScreen = ({ navigation }) => {
           headerLeft: ({ focused, size, color }) => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Home");
+                navigation.navigate("Default");
                 dispatch(updateRoute(false));
               }}
             >
@@ -79,7 +79,7 @@ const PostsScreen = ({ navigation }) => {
           headerLeft: ({ focused, size, color }) => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Home");
+                navigation.navigate("Default");
                 dispatch(updateRoute(false));
               }}
             >

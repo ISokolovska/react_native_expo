@@ -1,65 +1,18 @@
 import * as React from "react";
-// import PostsScreen from "./Screens/PostsScreen";
-import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
-import RegistrationScreen from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
+import { store } from "./redux/store";
 import useCachedResources from "./helpers/fonts";
-
-const AuthStack = createStackNavigator();
+import { Provider } from "react-redux";
+import Main from "./components/Main";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
+
   if (!isLoadingComplete) {
     return null;
   }
   return (
-    <NavigationContainer>
-      <AuthStack.Navigator>
-        <AuthStack.Screen
-          options={{ headerShown: false }}
-          name="Register"
-          component={RegistrationScreen}
-        />
-        <AuthStack.Screen
-          options={{ headerShown: false }}
-          name="Login"
-          component={LoginScreen}
-        />
-      </AuthStack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <Main />
+    </Provider>
   );
-  // <View style={styles.container}>
-  {
-    /* <RegistrationScreen /> */
-  }
-  {
-    /* <LoginScreen /> */
-  }
-  {
-    /* <PostsScreen /> */
-  }
-  {
-    /* <CreatePostsScreen /> */
-  }
-  {
-    /* <CommentsScreen /> */
-  }
-  {
-    /* <ProfileScreen /> */
-  }
-  {
-    /* <MapScreen /> */
-  }
-  {
-    /* <Home /> */
-  }
-  // </View>
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#fff",
-//   },
-// });
