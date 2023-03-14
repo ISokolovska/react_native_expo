@@ -21,7 +21,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { db } from "../../firebase/config";
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ export default function ProfileScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("../assets/images/photo_bg.jpg")}
+        source={require("../../assets/images/mountain.png")}
         resizeMode="cover"
         style={styles.image}
       >

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavigationContainer, useRoute } from "@react-navigation/native";
-import useRouter from "../router";
+import { useRouter } from "../router";
 import { refreshUser } from "../redux/auth/authOperation";
 import { onAuthStateChanged } from "firebase/auth";
 import { updateLoginState, updateUserData } from "../redux/auth/authSlice";

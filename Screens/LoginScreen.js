@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import {
+  ImageBackground,
+  Keyboard,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  StyleSheet,
   Text,
   TextInput,
-  View,
-  StyleSheet,
-  ImageBackground,
   TouchableOpacity,
-  Dimensions,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Keyboard,
+  View,
+  Dimensions,
+  Platform,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux/auth/authOperation";
 
 const initialState = {
   email: "",
@@ -18,109 +23,117 @@ const initialState = {
 };
 
 const LoginScreen = ({ navigation }) => {
+  const [showPass, onShowPass] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [dimensions, setDimensions] = useState({
-    width: Dimensions.get("window").width - 16 * 2,
-    height: Dimensions.get("window").height,
-  });
   const [state, setState] = useState(initialState);
+
+  const [dimensions, setDimensions] = useState({
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width - 16 * 2,
+  });
+  const dispatch = useDispatch();
+  // console.log(Platform.OS);
+
+  const keyboarHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    console.log(state);
+  };
+
+  const onShow = () => onShowPass((prevShow) => !prevShow);
+
+  const handleSubmit = () => {
+    dispatch(loginUser(state));
+    keyboarHide();
+  };
 
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width - 16 * 2;
       const height = Dimensions.get("window").height;
-      setDimensions({ width, height });
+      setDimensions({ height, width });
     };
     const subscription = Dimensions.addEventListener("change", onChange);
     return () => subscription?.remove();
   }, []);
 
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-    console.log(state);
-    setState(initialState);
-  };
-
-  // const handleSubmit = async () => {
-  //   dispatch(logInUser(state));
-  //   keyboardHide();
-  // };
-
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
+    <TouchableWithoutFeedback onPress={keyboarHide}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("./../assets/images/mountain.png")}
+          source={require("../assets/images/mountain.png")}
+          resizeMode="cover"
           style={styles.image}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.containerReg}
+          <View
+            style={{
+              ...styles.form,
+              paddingBottom:
+                !isShowKeyboard && dimensions.width < dimensions.height
+                  ? 100
+                  : 32,
+            }}
           >
-            <View
-              style={{
-                ...styles.form,
-                // marginBottom: isShowKeyboard ? 20 : "auto",
-                // width: dimensions,
-              }}
-              // style={styles.form}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={styles.containerLogin}
             >
-              <Text style={styles.title}>Log in</Text>
+              <Text style={styles.title}>Login</Text>
+              <SafeAreaView>
+                <View style={styles.loginInput}>
+                  <TextInput
+                    onChangeText={(value) =>
+                      setState((prevState) => ({ ...prevState, email: value }))
+                    }
+                    placeholder="E-mail"
+                    placeholderTextColor="#BDBDBD"
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                </View>
 
-              <TextInput
-                style={styles.input}
-                placeholder="E-mail"
-                onFocus={() => {
-                  setIsShowKeyboard(true);
-                }}
-                value={state.login}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, email: value }))
-                }
-                // defaultValue={text}
-              />
-              <View>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  onFocus={() => {
-                    setIsShowKeyboard(true);
-                  }}
-                  value={state.login}
-                  onChangeText={(value) =>
-                    setState((prevState) => ({ ...prevState, password: value }))
-                  }
-                  // defaultValue={text}
-                />
+                <View style={styles.passInput}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={"Password"}
+                    placeholderTextColor="#BDBDBD"
+                    secureTextEntry={showPass}
+                    onFocus={() => setIsShowKeyboard(true)}
+                    onChangeText={(value) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        password: value,
+                      }))
+                    }
+                  />
+                  <TouchableOpacity
+                    style={{ position: "absolute", right: 16, top: 16 }}
+                    onPress={onShow}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.buttonShow}>Show</Text>
+                  </TouchableOpacity>
+                </View>
+
                 <TouchableOpacity
-                  style={{ position: "absolute", right: 16, top: 16 }}
-                  // onPress={onShow}
+                  style={styles.button}
+                  onPress={handleSubmit}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.buttonShow}>Show</Text>
+                  <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={styles.button}
-                // onPress={handleSubmit}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.buttonText}>Log in</Text>
-              </TouchableOpacity>
+              </SafeAreaView>
               <TouchableOpacity
                 style={styles.changePageBtn}
                 onPress={() => navigation.navigate("Register")}
                 activeOpacity={0.7}
               >
                 <Text style={styles.changePageText}>
-                  Haven't an account? Registration
+                  Don't have an account? Register
                 </Text>
               </TouchableOpacity>
-              <View style={styles.line} />
-            </View>
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+          </View>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -133,48 +146,25 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "center",
   },
   form: {
     marginTop: "auto",
-    paddingHorizontal: 16,
-    // marginHorizontal: 16,
-    // paddingLeft: 16,
-    // paddingRight: 16,
-    paddingTop: 32,
-    // paddingBottom: 8,
-    backgroundColor: "#FFFFFF",
-    borderTopStartRadius: 25,
-    borderTopEndRadius: 25,
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
   title: {
-    // marginTop: 32,
-    marginBottom: 33,
-    textAlign: "center",
-    fontFamily: "Roboto-Medium",
+    fontFamily: "Roboto-Regular",
+    fontStyle: "normal",
     fontWeight: "500",
-    fontSize: 30,
-    lineHeight: 35,
+    fontSize: 35,
+    lineHeight: 45,
+    textAlign: "center",
     letterSpacing: 0.01,
     color: "#212121",
-  },
-  input: {
-    marginBottom: 16,
-    marginLeft: 16,
-    marginRight: 16,
-    minWidth: "100%",
-    height: 50,
-    padding: 16,
-    backgroundColor: "#F6F6F6",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#E8E8E8",
-    borderRadius: 8,
-    fontFamily: "Roboto-Regular",
-    fontWeight: "400",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#BDBDBD",
+    marginBottom: 32,
+    marginTop: 32,
   },
   buttonShow: {
     fontFamily: "Roboto-Regular",
@@ -184,20 +174,46 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#1B4371",
   },
-  containerReg: {},
+
+  loginInput: {
+    marginBottom: 16,
+    marginLeft: 16,
+    marginRight: 16,
+  },
+  passInput: {
+    position: "relative",
+    marginBottom: 43,
+    marginLeft: 16,
+    marginRight: 16,
+  },
+  input: {
+    fontSize: 16,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 16,
+    paddingRight: 16,
+    lineHeight: 19,
+    borderStyle: "solid",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    backgroundColor: "#F6F6F6",
+  },
+  containerLogin: {},
   button: {
     alignItems: "center",
-    width: "100%",
-    minHeight: 51,
-    marginTop: 43,
-    marginBottom: 16,
     paddingTop: 16,
     paddingBottom: 16,
+    paddingRight: 32,
+    paddingLeft: 32,
+    marginLeft: 16,
+    marginRight: 16,
+    marginBottom: 16,
     backgroundColor: "#FF6C00",
     borderRadius: 100,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "#fff",
     fontFamily: "Roboto-Regular",
     fontWeight: "400",
     fontSize: 16,
@@ -210,19 +226,10 @@ const styles = StyleSheet.create({
   changePageText: {
     color: "#1B4371",
     fontFamily: "Roboto-Regular",
+    fontStyle: "normal",
     fontWeight: "400",
     fontSize: 16,
     lineHeight: 19,
-  },
-  line: {
-    width: 134,
-    marginTop: 66,
-    marginBottom: 8,
-    borderBottomColor: "#212121",
-    borderBottomWidth: 5,
-    marginLeft: "auto",
-    marginRight: "auto",
-    borderRadius: 100,
   },
 });
 

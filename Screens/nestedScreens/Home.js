@@ -10,14 +10,25 @@ import {
 } from "react-native";
 
 import { Feather } from "@expo/vector-icons";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase/config";
 
 const Home = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
   // console.log('route.params', route.params);
 
-  const getPosts = async () => {};
+  const getPosts = async () => {
+    onSnapshot(collection(db, "posts"), (data) => {
+      setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+  };
 
-  const addLike = async (item) => {};
+  const addLike = async (item) => {
+    console.log(item);
+    await updateDoc(doc(db, "posts", item.id), {
+      likes: item.likes + 1,
+    });
+  };
 
   useEffect(() => {
     getPosts();

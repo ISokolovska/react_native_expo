@@ -1,16 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
   ImageBackground,
-  TouchableOpacity,
   Keyboard,
   KeyboardAvoidingView,
-  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
   TouchableWithoutFeedback,
+  View,
+  Dimensions,
+  Platform,
+  Image,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../redux/auth/authOperation";
+import * as ImagePicker from "expo-image-picker";
+
+const addButton = require("../assets/images/add.png");
 
 const initialState = {
   login: "",
@@ -18,111 +26,148 @@ const initialState = {
   password: "",
 };
 
+const metadata = {
+  contentType: "image/jpeg",
+};
+
 const RegistrationScreen = ({ navigation }) => {
+  const [showPass, onShowPass] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [dimensions, setDimensions] = useState({
-    width: Dimensions.get("window").width - 16 * 2,
-    height: Dimensions.get("window").height,
-  });
   const [state, setState] = useState(initialState);
+  const [dimensions, setDimensions] = useState({
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width - 16 * 2,
+  });
+  const [image, setImage] = useState(null);
+
+  const dispatch = useDispatch();
+  // console.log(Platform.OS);
+
+  const keyboarHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    console.log(state);
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const onShow = () => onShowPass((prevShow) => !prevShow);
+
+  const handleSubmit = async () => {
+    dispatch(registerUser({ ...state, image }));
+    keyboarHide();
+  };
 
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width - 16 * 2;
       const height = Dimensions.get("window").height;
-      setDimensions({ width, height });
+      setDimensions({ height, width });
     };
     const subscription = Dimensions.addEventListener("change", onChange);
     return () => subscription?.remove();
   }, []);
 
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-    console.log(state);
-    setState(initialState);
-  };
-
-  // const handleSubmit = async () => {
-  //   dispatch(registerUser({ ...state, image }));
-  //   keyboardHide();
-  // };
-
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
+    <TouchableWithoutFeedback onPress={keyboarHide}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("./../assets/images/mountain.png")}
+          source={require("../assets/images/mountain.png")}
+          resizeMode="cover"
           style={styles.image}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.containerReg}
+          <View
+            style={{
+              ...styles.form,
+              paddingBottom:
+                !isShowKeyboard && dimensions.width < dimensions.height
+                  ? 100
+                  : 32,
+            }}
           >
-            <View
-              style={{
-                ...styles.form,
-                // marginBottom: isShowKeyboard ? 20 : "auto",
-                // width: dimensions,
-              }}
-              // style={styles.form}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={styles.containerReg}
             >
-              <Text style={styles.title}>Registration</Text>
-              <View></View>
-
-              <TextInput
-                style={styles.input}
-                placeholder="Login"
-                onFocus={() => {
-                  setIsShowKeyboard(true);
-                }}
-                value={state.login}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, login: value }))
-                }
-                // defaultValue={text}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="E-mail"
-                onFocus={() => {
-                  setIsShowKeyboard(true);
-                }}
-                value={state.email}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, email: value }))
-                }
-                // defaultValue={text}
-              />
-              <View>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  onFocus={() => {
-                    setIsShowKeyboard(true);
-                  }}
-                  value={state.password}
-                  onChangeText={(value) =>
-                    setState((prevState) => ({ ...prevState, password: value }))
-                  }
-                  // defaultValue={text}
-                />
+              <View style={styles.avatarBox}>
+                {image && (
+                  <Image source={{ uri: image }} style={styles.avatarImage} />
+                )}
                 <TouchableOpacity
-                  style={{ position: "absolute", right: 16, top: 16 }}
-                  // onPress={onShow}
-                  activeOpacity={0.7}
+                  style={styles.addAvatarButton}
+                  onPress={pickImage}
                 >
-                  <Text style={styles.buttonShow}>Show</Text>
+                  <Image source={addButton} />
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={styles.button}
-                // onPress={handleSubmit}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.buttonText}>Registration</Text>
-              </TouchableOpacity>
+              <Text style={styles.title}>Registration</Text>
+              <SafeAreaView>
+                <View style={styles.loginInput}>
+                  <TextInput
+                    onChangeText={(value) =>
+                      setState((prevState) => ({ ...prevState, login: value }))
+                    }
+                    placeholder="Login"
+                    placeholderTextColor="#BDBDBD"
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                </View>
+                <View style={styles.loginInput}>
+                  <TextInput
+                    onChangeText={(value) =>
+                      setState((prevState) => ({ ...prevState, email: value }))
+                    }
+                    placeholder="E-mail"
+                    placeholderTextColor="#BDBDBD"
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                </View>
+                <View style={styles.passInput}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={"Password"}
+                    placeholderTextColor="#BDBDBD"
+                    secureTextEntry={showPass}
+                    onFocus={() => setIsShowKeyboard(true)}
+                    onChangeText={(value) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        password: value,
+                      }))
+                    }
+                  />
+                  <TouchableOpacity
+                    style={{ position: "absolute", right: 16, top: 16 }}
+                    onPress={onShow}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.buttonShow}>Show</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleSubmit}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.buttonText}>Register</Text>
+                </TouchableOpacity>
+              </SafeAreaView>
               <TouchableOpacity
                 style={styles.changePageBtn}
                 onPress={() => navigation.navigate("Login")}
@@ -132,9 +177,8 @@ const RegistrationScreen = ({ navigation }) => {
                   Already have an account? Log in
                 </Text>
               </TouchableOpacity>
-              <View style={styles.line} />
-            </View>
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+          </View>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -147,50 +191,25 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: "flex-end",
-    resizeMode: "cover",
+    justifyContent: "center",
   },
   form: {
     marginTop: "auto",
-    paddingHorizontal: 16,
-    // marginHorizontal: 16,
-    // paddingLeft: 16,
-    // paddingRight: 16,
-    // paddingBottom: 8,
-    paddingTop: 92,
-    backgroundColor: "#FFFFFF",
-    borderTopStartRadius: 25,
-    borderTopEndRadius: 25,
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
   title: {
-    // marginTop: 92,
-    marginBottom: 33,
-    textAlign: "center",
-    fontFamily: "Roboto-Medium",
+    fontFamily: "Roboto-Regular",
+    fontStyle: "normal",
     fontWeight: "500",
-    fontSize: 30,
-    lineHeight: 35,
+    fontSize: 35,
+    lineHeight: 45,
+    textAlign: "center",
     letterSpacing: 0.01,
     color: "#212121",
-  },
-  input: {
-    marginBottom: 16,
-    // marginLeft: 16,
-    // marginRight: 16,
-    // marginHorizontal: 16,
-    minWidth: "100%",
-    height: 50,
-    padding: 16,
-    backgroundColor: "#F6F6F6",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#E8E8E8",
-    borderRadius: 8,
-    fontFamily: "Roboto-Regular",
-    fontWeight: "400",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#BDBDBD",
+    marginBottom: 32,
+    marginTop: 92,
   },
   buttonShow: {
     fontFamily: "Roboto-Regular",
@@ -200,20 +219,46 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#1B4371",
   },
+
+  loginInput: {
+    marginBottom: 16,
+    marginLeft: 16,
+    marginRight: 16,
+  },
+  passInput: {
+    position: "relative",
+    marginBottom: 43,
+    marginLeft: 16,
+    marginRight: 16,
+  },
+  input: {
+    fontSize: 16,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 16,
+    paddingRight: 16,
+    lineHeight: 19,
+    borderStyle: "solid",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    backgroundColor: "#F6F6F6",
+  },
   containerReg: {},
   button: {
     alignItems: "center",
-    width: "100%",
-    minHeight: 51,
-    marginTop: 43,
-    marginBottom: 16,
     paddingTop: 16,
     paddingBottom: 16,
+    paddingRight: 32,
+    paddingLeft: 32,
+    marginLeft: 16,
+    marginRight: 16,
+    marginBottom: 16,
     backgroundColor: "#FF6C00",
     borderRadius: 100,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "#fff",
     fontFamily: "Roboto-Regular",
     fontWeight: "400",
     fontSize: 16,
@@ -226,19 +271,31 @@ const styles = StyleSheet.create({
   changePageText: {
     color: "#1B4371",
     fontFamily: "Roboto-Regular",
+    fontStyle: "normal",
     fontWeight: "400",
     fontSize: 16,
     lineHeight: 19,
   },
-  line: {
-    width: 134,
-    marginTop: 66,
-    marginBottom: 8,
-    borderBottomColor: "#212121",
-    borderBottomWidth: 5,
-    marginLeft: "auto",
-    marginRight: "auto",
-    borderRadius: 100,
+  avatarBox: {
+    position: "absolute",
+    top: -60,
+    left: Dimensions.get("window").width / 2 - 60,
+    width: 120,
+    height: 120,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  addAvatarButton: {
+    position: "absolute",
+    bottom: 14,
+    right: -12.5,
+    width: 25,
+    height: 25,
+  },
+  avatarImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
   },
 });
 

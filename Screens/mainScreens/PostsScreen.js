@@ -1,12 +1,12 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import DefaultScreenPosts from "./nestedScreens/DefaultScreenPosts";
-import CommentsScreen from "./nestedScreens/CommentsScreen";
-import MapScreen from "./nestedScreens/MapScreen";
+import Home from "../nestedScreens/Home";
+import CommentsScreen from "../nestedScreens/CommentsScreen";
+import MapScreen from "../nestedScreens/MapScreen";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
-import { logOutUser } from "../redux/auth/authOperation";
-import { updateRoute } from "../redux/auth/authSlice";
+import { logOutUser } from "../../redux/auth/authOperation";
+import { updateRoute } from "../../redux/auth/authSlice";
 
 const NestedScreen = createStackNavigator();
 
@@ -36,7 +36,7 @@ const PostsScreen = ({ navigation }) => {
     >
       <NestedScreen.Screen
         name="Default"
-        component={DefaultScreenPosts}
+        component={Home}
         options={{
           title: "Posts",
           headerLeft: () => {},

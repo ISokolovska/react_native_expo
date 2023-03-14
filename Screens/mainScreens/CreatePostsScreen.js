@@ -15,10 +15,10 @@ import { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { db, storage } from "../firebase/config";
+import { db, storage } from "../../firebase/config";
 import { collection, addDoc } from "firebase/firestore";
 import { useSelector } from "react-redux";
-import { selectUser } from "../redux/auth/authSelectors";
+import { selectUser } from "../../redux/auth/authSelectors";
 import * as ImagePicker from "expo-image-picker";
 
 const CreatePostsScreen = ({ navigation }) => {
